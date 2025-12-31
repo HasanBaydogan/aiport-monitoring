@@ -4,7 +4,7 @@ import { authService } from './auth'
 
 // Dynamic API instance factory with JWT token support
 export function createApiInstance(project: Project | null): AxiosInstance {
-  const baseURL = project?.apiUrl || process.env.NEXT_PUBLIC_API_URL || 'https://app.flyai.tr:8080'
+  const baseURL = project?.apiUrl || process.env.NEXT_PUBLIC_API_URL || 'https://test.flyai.tr:8080'
   
   const instance = axios.create({
     baseURL,

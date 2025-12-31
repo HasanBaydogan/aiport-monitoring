@@ -39,7 +39,7 @@ export const defaultProjects: Project[] = [
   {
     id: 'project-1',
     name: 'SMT V1 Backend',
-    apiUrl: 'http://test.flyai.tr:8080',
+    apiUrl: 'https://test.flyai.tr:8080',
     description: 'Spring Boot Backend',
     color: '#3b82f6',
     enabled: true,
