@@ -23,7 +23,7 @@ export function createApiInstance(project: Project | null): AxiosInstance {
         const tokenDots = (token.match(/\./g) || []).length
         if (tokenDots === 2) {
           config.headers.Authorization = `Bearer ${token}`
-        } else {
+        } else {S
           console.warn('Invalid JWT token format, not adding to request')
         }
       }
@@ -32,11 +32,30 @@ export function createApiInstance(project: Project | null): AxiosInstance {
     (error) => Promise.reject(error)
   )
 
-  // Response interceptor - Token refresh
+  // Response interceptor - Token refresh and error handling
   instance.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config
+
+      // CORS Error Detection
+      if (!error.response && error.message) {
+        const isCorsError = 
+          error.message.includes('CORS') ||
+          error.message.includes('Access-Control') ||
+          error.message.includes('blocked by CORS policy') ||
+          error.code === 'ERR_NETWORK' ||
+          error.code === 'ECONNABORTED'
+        
+        if (isCorsError) {
+          console.error('CORS Error:', {
+            url: originalRequest?.url,
+            method: originalRequest?.method,
+            message: 'CORS policy blocked the request. Please check backend CORS configuration.',
+            suggestion: 'Backend should allow origin: ' + (typeof window !== 'undefined' ? window.location.origin : 'frontend origin')
+          })
+        }
+      }
 
       // 401 Unauthorized - Token expired
       if (error.response?.status === 401 && !originalRequest._retry) {
@@ -70,6 +89,23 @@ export function createApiInstance(project: Project | null): AxiosInstance {
         }
       }
 
+      // Enhanced error logging for debugging
+      if (error.response) {
+        const status = error.response.status
+        const url = originalRequest?.url || 'unknown'
+        
+        // Log specific error types
+        if (status === 503) {
+          console.warn(`Service Unavailable (503) for ${url}. Backend service may be down or overloaded.`)
+        } else if (status === 404) {
+          console.warn(`Not Found (404) for ${url}. Endpoint may not exist or path is incorrect.`)
+        } else if (status >= 500) {
+          console.error(`Server Error (${status}) for ${url}. Backend server error.`)
+        } else if (status >= 400) {
+          console.warn(`Client Error (${status}) for ${url}.`)
+        }
+      }
+
       return Promise.reject(error)
     }
   )
@@ -96,14 +132,28 @@ export function createMonitoringApi(project: Project | null) {
     
     // Specific Metric
     getMetric: (metricName: string, tags?: Record<string, string>) => {
-      let url = `/actuator/metrics/${metricName}`
+      // Validate and encode metric name
+      if (!metricName || metricName.includes('{') || metricName.includes('}')) {
+        throw new Error(`Invalid metric name: ${metricName}`)
+      }
+      let url = `/actuator/metrics/${encodeURIComponent(metricName)}`
       if (tags) {
         const tagParams = Object.entries(tags)
-          .map(([key, value]) => `${key}:${value}`)
+          .map(([key, value]) => {
+            // Validate tag values - no placeholders or invalid characters
+            if (value && (value.includes('{') || value.includes('}'))) {
+              console.warn(`Invalid tag value detected: ${key}=${value}`)
+              return null
+            }
+            return `${key}:${value}`
+          })
+          .filter(Boolean)
           .join(',')
-        url += `?tag=${tagParams}`
+        if (tagParams) {
+          url += `?tag=${encodeURIComponent(tagParams)}`
+        }
       }
-      return apiInstance.get(url)
+      return apiInstance.get(url.trim()) // Remove any trailing whitespace
     },
     
     // Prometheus Format
