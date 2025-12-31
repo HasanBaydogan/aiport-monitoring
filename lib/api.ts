@@ -23,7 +23,7 @@ export function createApiInstance(project: Project | null): AxiosInstance {
         const tokenDots = (token.match(/\./g) || []).length
         if (tokenDots === 2) {
           config.headers.Authorization = `Bearer ${token}`
-        } else {S
+        } else {
           console.warn('Invalid JWT token format, not adding to request')
         }
       }
