@@ -288,3 +288,5 @@ const fetchData = async () => {
 
 Backend'de `/api/v1/monitoring/api-metrics` endpoint'ini implement edin. Frontend zaten bu endpoint'i çağırmaya hazır (`lib/api.ts` - satır 141-142).
 
+
+

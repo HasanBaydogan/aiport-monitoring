@@ -119,7 +119,7 @@ export const authService = {
 
   // Login
   login: async (project: Project | null, credentials: LoginRequest): Promise<LoginResponse> => {
-    const baseURL = project?.apiUrl || process.env.NEXT_PUBLIC_API_URL || 'https://app.flyai.tr:8080'
+    const baseURL = project?.apiUrl || process.env.NEXT_PUBLIC_API_URL || 'https://test.flyai.tr:8080'
     try {
       const response = await axios.post(
         `${baseURL}/api/v1/auth/login`,
@@ -169,7 +169,7 @@ export const authService = {
 
   // Refresh token
   refreshToken: async (project: Project | null, refreshToken: string): Promise<RefreshTokenResponse> => {
-    const baseURL = project?.apiUrl || process.env.NEXT_PUBLIC_API_URL || 'https://app.flyai.tr:8080'
+    const baseURL = project?.apiUrl || process.env.NEXT_PUBLIC_API_URL || 'https://test.flyai.tr:8080'
     try {
       const response = await axios.post(
         `${baseURL}/api/v1/auth/refresh-token`,

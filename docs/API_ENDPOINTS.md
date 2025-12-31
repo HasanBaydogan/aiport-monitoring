@@ -241,3 +241,5 @@ Error trend analizini döner.
 - Tüm timestamp'ler ISO 8601 formatında olmalıdır.
 
 
+
+

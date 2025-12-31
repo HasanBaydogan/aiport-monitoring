@@ -196,3 +196,5 @@ Her backend API'nin CORS ayarlarında Vercel domain'inizi eklemeniz gerekir:
 5. **Dokümantasyon**: Her proje için API dokümantasyonu tutun
 
 
+
+

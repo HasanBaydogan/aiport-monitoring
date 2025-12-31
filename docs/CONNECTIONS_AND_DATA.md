@@ -809,3 +809,5 @@ UI Render
 - `components/LogViewer.tsx` - Log görüntüleyici
 - `components/AlertManager.tsx` - Alert yöneticisi
 
+
+

@@ -183,3 +183,5 @@ Frontend also uses Actuator endpoints. Ensure these are enabled:
 - Parse application logs for log viewer
 - Implement alert rules based on thresholds (error rate > 5%, etc.)
 
+
+

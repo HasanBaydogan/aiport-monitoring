@@ -144,3 +144,5 @@ Return system alerts:
 ## Spring Boot Actuator (Optional)
 If Actuator is enabled, ensure `/actuator/health` is public and other endpoints require JWT.
 
+
+
